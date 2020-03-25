@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-menu ref="connectionMenu" @open="openConnection" class="connection-menu" active-text-color="#ffd04b">
-      <el-submenu v-for="(item) of connections" :key="item.connectionName" :index="item.connectionName">
+      <el-submenu v-for="(item, index) of connections" :key="item.connectionName" :index="item.connectionName">
         <!-- connection menu -->
         <ConnectionMenu
           slot="title"

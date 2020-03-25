@@ -104,21 +104,21 @@ export default {
     testConnection () { // 测试连接
       const config = this.parseConnectionData();
       console.info(config);
-      redisClient.testConnection(config.host, config.port, config.auth)
-      // const client = redisClient.createConnection(
-      //   config.host, config.port, config.auth, config.connectionName);
-      //
-      // client.on('error', (err) => {
-      //   this.$message.error({
-      //     message: 'Redis Client On Error: ' + err,
-      //     duration: 3000
-      //   });
-      //   this.$message.success({
-      //     message:'连接成功',
-      //     duration:3000
-      //   })
-      //
-      // });
+      // redisClient.testConnection(config.host, config.port, config.auth)
+      const client = redisClient.createConnection(
+        config.host, config.port, config.auth, config.connectionName);
+
+      client.on('error', (err) => {
+        this.$message.error({
+          message: 'Redis Client On Error: ' + err,
+          duration: 3000
+        });
+        this.$message.success({
+          message:'连接成功',
+          duration:3000
+        })
+
+      });
       console.info(config);
     },
     parseConnectionData () { // 解析初始数据
