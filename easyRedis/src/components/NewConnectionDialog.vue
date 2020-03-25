@@ -1,0 +1,152 @@
+<template>
+  <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" :modal-append-to-body="false">
+    <el-form :label-position="labelPosition" label-width="80px">
+
+      <el-form-item label="Alias">
+        <el-input v-model="connection.name" autocomplete="off"></el-input>
+      </el-form-item>
+
+      <el-form-item label="Host">
+        <el-input v-model="connection.host" autocomplete="off" placeholder="127.0.0.1"></el-input>
+      </el-form-item>
+
+      <el-form-item label="Port">
+        <el-input v-model="connection.port" autocomplete="off" placeholder="6379"></el-input>
+      </el-form-item>
+
+      <el-form-item label="Password">
+        <el-input v-model="connection.auth" autocomplete="off"></el-input>
+      </el-form-item>
+
+      <el-form-item v-show="false" label=""> <!-- 功能保留先不用 -->
+        <el-checkbox v-model="sshOptionsShow">SSH Tunnel</el-checkbox>
+      </el-form-item>
+
+      <!-- ssh connection form -->
+      <el-form v-if="sshOptionsShow" v-show="sshOptionsShow" label-width="80px">
+        <el-form-item label="Host">
+          <el-input v-model="connection.sshOptions.host" autocomplete="off"></el-input>
+        </el-form-item>
+
+        <el-form-item label="Port">
+          <el-input v-model="connection.sshOptions.port" autocomplete="off"></el-input>
+        </el-form-item>
+
+        <el-form-item label="Username">
+          <el-input v-model="connection.sshOptions.username" autocomplete="off"></el-input>
+        </el-form-item>
+
+        <el-form-item label="Password">
+          <el-input v-model="connection.sshOptions.password" autocomplete="off"></el-input>
+        </el-form-item>
+
+        <el-form-item label="PrivateKey">
+          <el-tooltip effect="dark">
+            <div slot="content"></div>
+            <el-input v-if='connection.sshOptions.privatekey' v-model='connection.sshOptions.privatekey' clearable autocomplete="off" ></el-input>
+            <el-input v-else id='private-key-path' type='file' @change='changePrivateKey'></el-input>
+          </el-tooltip>
+        </el-form-item>
+      </el-form>
+    </el-form>
+
+    <div slot="footer" class="dialog-footer">
+      <el-button  @click="testConnection()">{{ $t('message.test_connection') }}</el-button>
+      <el-button @click="dialogVisible = false">{{ $t('el.messagebox.cancel') }}</el-button>
+      <el-button type="primary" @click="editConnection">{{ $t('el.messagebox.confirm') }}</el-button>
+    </div>
+  </el-dialog>
+</template>
+
+<script type="text/javascript">
+import storage from '@/storage';
+import redisClient from '../redisClient'
+
+export default {
+  data () {
+    return {
+      dialogVisible: false,
+      labelPosition: 'left',
+      oldKey: '',
+      connection: {
+        host: '',
+        port: '',
+        auth: '',
+        name: '',
+        sshOptions: {
+          host: '',
+          port: 22,
+          username: '',
+          password: '',
+          privateKey: ''
+        }
+      },
+      sshOptionsShow: false
+    }
+  },
+  props: ['config', 'editMode'],
+  components: { redisClient },
+  computed: {
+    dialogTitle () {
+      return this.editMode ? this.$t('message.edit_connection') : this.$t('message.new_connection')
+    }
+  },
+  methods: {
+    editConnection () {
+      storage.editConnectionByKey(this.parseConnectionData(), this.oldKey);
+      this.dialogVisible = true;
+      this.$emit('editConnectionFinished');
+    },
+    changePrivateKey () {
+      const path = document.getElementById('private-key-path').files[0].path;
+      this.$set(this.connection.sshOptions, 'privatekey', path);
+    },
+    testConnection () { // 测试连接
+      const config = this.parseConnectionData();
+      console.info(config);
+      redisClient.testConnection(config.host, config.port, config.auth)
+      // const client = redisClient.createConnection(
+      //   config.host, config.port, config.auth, config.connectionName);
+      //
+      // client.on('error', (err) => {
+      //   this.$message.error({
+      //     message: 'Redis Client On Error: ' + err,
+      //     duration: 3000
+      //   });
+      //   this.$message.success({
+      //     message:'连接成功',
+      //     duration:3000
+      //   })
+      //
+      // });
+      console.info(config);
+    },
+    parseConnectionData () { // 解析初始数据
+      const config = JSON.parse(JSON.stringify(this.connection));
+      !config.host && (config.host = '127.0.0.1');
+      !config.port && (config.port = 6379);
+      // 删除 ssh
+      if (!this.sshOptionsShow || !config.sshOptions.host) {
+        delete config.sshOptions;
+      }
+      return config;
+    }
+  },
+  mounted () {
+    if (this.editMode) {
+      const sshOptionsNew = this.connection.sshOptions;
+      this.connection = JSON.parse(JSON.stringify(this.config));
+      // this.oldKey = storage.getConnectionKey(this.config);
+
+      this.sshOptionsShow = !!this.connection.sshOptions;
+      !this.connection.sshOptions && (this.connection.sshOptions = sshOptionsNew);
+    }
+    delete this.connection.connectionName;
+  }
+}
+</script>
+
+<style>
+
+
+</style>
