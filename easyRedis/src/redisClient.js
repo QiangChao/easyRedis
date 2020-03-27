@@ -7,10 +7,13 @@ export default {
   testConnection(host, port, auth) {
       console.info("test connecton redis")
       console.info(redis);
-      const client = redis.createClient(port, host, {});
-      client.on('ready', function(res){
-        console.log('ready')
-      })
+      let client = redis.createClient(port, host, {});
+
+      client.on('error', (err) => {
+        alert("连接失败");
+      });
+      alert("连接成功");
+    client.quit();
   },
   createConnection(host, port, auth, connectionName = null) {
     const options = {

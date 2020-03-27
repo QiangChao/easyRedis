@@ -13,7 +13,7 @@ import RightClickMenu from '@/components/RightClickMenu';
 export default {
   data() {
     return {
-      keyList: [],
+      keyList: ["aaaaa", "bbbbbb"],
       scanCursorList: [0],
       keysPageSize: 50,
       searchPageSize: 10000,
@@ -60,6 +60,8 @@ export default {
     clickKey(key, event = null, newTab = false) {
       // highlight clicked key
       event && this.hightKey(event);
+      console.info("clickKey: key=" + key + "  newTab=" + newTab);
+      console.info(this.$bus)
       this.$bus.$emit('clickedKey', this.client, key, newTab);
     },
     hightKey(event) {
@@ -94,7 +96,7 @@ export default {
         if (tmpShow) {
           return true;
         }
-
+        console.info(reply);
         pushToCursorList && this.scanCursorList.push(reply[0]);
         this.$parent.$refs.pagenation.nextPageDisabled = (reply[0] === '0') ? true : false;
 

@@ -1,5 +1,5 @@
 <template>
-<div>
+<div style="margin-top:5px;box-shadow:#985656 0px 0px 1px">
   <div class="connection-opt-icons">
     <i :title="$t('message.refresh_connection')" class="connection-right-icon el-icon-refresh" @click.stop.prevent="refreshConnection()"></i>
     <i :title="$t('message.redis_console')" class="connection-right-icon fa fa-terminal" @click.stop.prevent="openCli()"></i>
