@@ -62,6 +62,12 @@
         this.addTab(this.initKeyTabItem(client, '', type), true);
       });
     },
+    mounted () {
+      console.info("mouted....clickedKey");
+      this.$bus.$on('clickedKey', (client, key, newTab = false) => {
+        this.addKeyTab(client, key, newTab);
+      });
+    },
     methods: {
       removeTab(removeName) {
         const { tabs } = this;

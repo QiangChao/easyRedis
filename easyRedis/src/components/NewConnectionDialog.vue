@@ -51,9 +51,9 @@
     </el-form>
 
     <div slot="footer" class="dialog-footer">
-      <el-button  @click="testConnection()">{{ $t('message.test_connection') }}</el-button>
-      <el-button @click="dialogVisible = false">{{ $t('el.messagebox.cancel') }}</el-button>
-      <el-button type="primary" @click="editConnection">{{ $t('el.messagebox.confirm') }}</el-button>
+      <el-button @click.stop.prevent="testConnection">{{ $t('message.test_connection') }}</el-button>
+      <el-button @click.stop.prevent="dialogVisible = false">{{ $t('el.messagebox.cancel') }}</el-button>
+      <el-button type="primary" @click.stop.prevent="editConnection">{{ $t('el.messagebox.confirm') }}</el-button>
     </div>
   </el-dialog>
 </template>

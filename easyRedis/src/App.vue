@@ -22,7 +22,7 @@
 
       <!-- tab container -->
       <el-main>
-<!--        <Tabs></Tabs>-->
+        <Tabs></Tabs>
       </el-main>
     </el-container>
 
@@ -34,6 +34,9 @@
 <script>
 import Header from '@/Header';
 import Aside from '@/Aside';
+import Tabs from '@/components/Tabs';
+// import ScrollToTop from '@/components/ScrollToTop';
+// import UpdateCheck from '@/components/UpdateCheck';
 
 export default {
   name: 'App',
@@ -48,7 +51,7 @@ export default {
       this.initFont()
     })
   },
-  components: { Aside, Header },
+  components: { Aside, Header, Tabs },
   initFont () {
     let fontFamily = this.$storage.getSetting('fontFamily');
     // default font-family

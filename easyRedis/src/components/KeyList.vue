@@ -13,7 +13,7 @@ import RightClickMenu from '@/components/RightClickMenu';
 export default {
   data() {
     return {
-      keyList: ["aaaaa", "bbbbbb"],
+      keyList: [],
       scanCursorList: [0],
       keysPageSize: 50,
       searchPageSize: 10000,
@@ -34,7 +34,7 @@ export default {
     };
   },
   props: ['client'],
-  components: {RightClickMenu},
+  components: { RightClickMenu },
   created() {
     this.$bus.$on('refreshKeyList', (client, removeKey) => {
       // refresh only self connection key list
@@ -61,7 +61,7 @@ export default {
       // highlight clicked key
       event && this.hightKey(event);
       console.info("clickKey: key=" + key + "  newTab=" + newTab);
-      console.info(this.$bus)
+      console.info(this.client);
       this.$bus.$emit('clickedKey', this.client, key, newTab);
     },
     hightKey(event) {
